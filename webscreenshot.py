@@ -36,6 +36,7 @@ import shlex
 import logging
 import errno
 import argparse
+import datetime
 
 # Python 2 and 3 compatibility
 if (sys.version_info < (3, 0)):
@@ -123,6 +124,8 @@ ipv4_and_port = re.compile('^(?P<host>%s):(?P<port>%s)%s' % (p_ipv4_elementary, 
 ipv4_only = re.compile('^(?P<host>%s)%s$' % (p_ipv4_elementary, p_resource))
 
 entry_from_csv = re.compile('^(?P<host>%s|%s)\s+(?P<port>\d+)$' % (p_domain, p_ipv4_elementary))
+
+now = datetime.datetime.now()
 
 # Handful functions
 def init_worker():
@@ -356,8 +359,8 @@ def craft_cmd(url_and_options):
     logger_url.addHandler(logger_output)
     logger_url.setLevel(options.log_level)
 
-    output_filename = os.path.join(options.output_directory, ('%s.png' % filter_bad_filename_chars(url)))
-        
+    output_filename = os.path.join(options.output_directory, ('%s.png' % filter_bad_filename_chars(url + '_' + now.strftime("%Y-%m-%d_%H-%M-%S"))))
+    
     # PhantomJS renderer
     if options.renderer == 'phantomjs':
         # If you ever want to add some voodoo options to the phantomjs command to be executed, that's here right below
